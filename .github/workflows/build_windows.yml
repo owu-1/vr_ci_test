@@ -1,0 +1,33 @@
+name: Build Windows
+on: [workflow_dispatch, workflow_call]
+jobs:
+  buildWindows:
+    name: Build Windows
+    # unity-builder fails on windows-2022 (https://github.com/game-ci/unity-builder/issues/542)
+    runs-on: windows-2019
+    strategy:
+      matrix:
+        targetPlatform:
+          - StandaloneWindows64
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ${{ vars.UNITY_PROJECT_PATH }}/Library
+          key: Library-${{ vars.UNITY_PROJECT_PATH }}-${{ matrix.targetPlatform }}-${{ hashFiles(vars.UNITY_PROJECT_PATH) }}
+          restore-keys: |
+            Library-${{ vars.UNITY_PROJECT_PATH }}-${{ matrix.targetPlatform }}-
+            Library-${{ vars.UNITY_PROJECT_PATH }}-
+            Library-
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ vars.UNITY_PROJECT_PATH }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Build
+          path: build
