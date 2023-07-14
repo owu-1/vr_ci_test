@@ -9,6 +9,10 @@ jobs:
       matrix:
         targetPlatform:
           - StandaloneWindows64
+        architecture:
+          - x64 # Intel 64-bit
+          - x86 # Intel 32-bit
+          - ARM64 # ARM 64-bit
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -27,6 +31,8 @@ jobs:
         with:
           projectPath: ${{ vars.UNITY_PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: UnityBuilderAction.Builder.BuildProject
+          customParameters: -architecture ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v3
         with:
           name: Windows Build

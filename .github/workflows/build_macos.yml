@@ -1,13 +1,16 @@
 name: Build macOS
 on: [workflow_dispatch, workflow_call]
 jobs:
-  buildAndTestLinux:
+  buildMacOS:
     name: Build for MacOS
     runs-on: ubuntu-latest
     strategy:
       matrix:
         targetPlatform:
           - StandaloneOSX
+        architecture:
+          - x64 # Intel 64-bit
+          - ARM64 # Apple silicon
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -26,7 +29,9 @@ jobs:
         with:
           projectPath: ${{ vars.UNITY_PROJECT_PATH }}
           targetPlatform: ${{ matrix.targetPlatform }}
+          buildMethod: UnityBuilderAction.Builder.BuildProject
+          customParameters: -architecture ${{ matrix.architecture }}
       - uses: actions/upload-artifact@v3
         with:
-          name: Build
+          name: MacOS Build
           path: build
