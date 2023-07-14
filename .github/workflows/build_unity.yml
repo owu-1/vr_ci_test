@@ -1,0 +1,48 @@
+name: Build Unity Project
+on:
+  workflow_call:
+    inputs:
+      buildPlatform:
+        required: true
+        type: string
+      targetPlatform:
+        required: true
+        type: string
+      customParameters:
+        required: false
+        type: string
+    secrets:
+      UNITY_LICENSE:
+        required: true
+      UNITY_EMAIL:
+        required: true
+      UNITY_PASSWORD:
+        required: true
+jobs:
+  buildUnity:
+    name: Build Unity Project
+    runs-on: ${{ inputs.buildPlatform }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ${{ vars.UNITY_PROJECT_PATH }}/Library
+          key: Library-${{ vars.UNITY_PROJECT_PATH }}-${{ inputs.targetPlatform }}-${{ hashFiles(vars.UNITY_PROJECT_PATH) }}
+          restore-keys: |
+            Library-${{ vars.UNITY_PROJECT_PATH }}-${{ inputs.targetPlatform }}-
+            Library-${{ vars.UNITY_PROJECT_PATH }}-
+            Library-
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ vars.UNITY_PROJECT_PATH }}
+          targetPlatform: ${{ inputs.targetPlatform }}
+          buildMethod: UnityBuilderAction.Builder.BuildProject
+          customParameters: ${{ inputs.customParameters }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Build
+          path: build

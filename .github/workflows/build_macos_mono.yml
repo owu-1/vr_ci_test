@@ -1,19 +1,17 @@
-name: Build Windows
+name: Build macOS (Mono)
 on: [workflow_call, workflow_dispatch]
 jobs:
   buildWindows:
-    name: Build Windows
+    name: Build macOS (Mono)
     strategy:
       matrix:
         buildPlatform:
-          # unity-builder fails on windows-2022 (https://github.com/game-ci/unity-builder/issues/542)
-          - windows-2019 # build on windows to support Unity IL2CPP scripting backend
+          - ubuntu-latest
         targetPlatform:
-          - StandaloneWindows64
+          - StandaloneOSX
         architecture:
           - x64 # Intel 64-bit
-          - x86 # Intel 32-bit
-          - ARM64 # ARM 64-bit
+          - ARM64 # Apple silicon
     uses: ./.github/workflows/build_unity.yml
     with:
       buildPlatform: ${{ matrix.buildPlatform }}
