@@ -2,6 +2,9 @@ name: Build Unity Project
 on:
   workflow_call:
     inputs:
+      buildName:
+        required: true
+        type: string
       buildPlatform:
         required: true
         type: string
@@ -44,5 +47,8 @@ jobs:
           customParameters: ${{ inputs.customParameters }}
       - uses: actions/upload-artifact@v3
         with:
-          name: Build
-          path: build
+          name: ${{ inputs.buildName }}
+          path: |
+            build
+            !build/${{ inputs.targetPlatform }}/${{ inputs.targetPlatform }}_BackUpThisFolder_ButDontShipItWithYourGame
+            !build/${{ inputs.targetPlatform }}/${{ inputs.targetPlatform }}_BurstDebugInformation_DoNotShip

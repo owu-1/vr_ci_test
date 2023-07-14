@@ -16,6 +16,7 @@ jobs:
           - ARM64 # ARM 64-bit
     uses: ./.github/workflows/build_unity.yml
     with:
+      buildName: Windows-${{ matrix.architecture }}
       buildPlatform: ${{ matrix.buildPlatform }}
       targetPlatform: ${{ matrix.targetPlatform }}
       customParameters: -architecture ${{ matrix.architecture }}

@@ -1,23 +1,19 @@
-name: Build macOS (Mono)
+name: Build Linux
 on: [workflow_call, workflow_dispatch]
 jobs:
   buildWindows:
-    name: Build macOS (Mono)
+    name: Build Linux
     strategy:
       matrix:
         buildPlatform:
           - ubuntu-latest
         targetPlatform:
-          - StandaloneOSX
-        architecture:
-          - x64 # Intel 64-bit
-          - ARM64 # Apple silicon
+          - StandaloneLinux64
     uses: ./.github/workflows/build_unity.yml
     with:
-      buildName: macOS-${{ matrix.architecture }}-mono
+      buildName: Linux-x64
       buildPlatform: ${{ matrix.buildPlatform }}
       targetPlatform: ${{ matrix.targetPlatform }}
-      customParameters: -architecture ${{ matrix.architecture }}
     secrets:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
