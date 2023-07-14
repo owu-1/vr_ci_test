@@ -8,6 +8,7 @@ using UnityBuilderAction.Versioning;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEditor.Build;
 
 namespace UnityBuilderAction
 {
@@ -102,13 +103,19 @@ namespace UnityBuilderAction
         {
             if (buildPlayerOptions.target == BuildTarget.StandaloneOSX)
             {
-                PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
-                UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.Build.OSArchitecture)Enum.Parse(typeof(UnityEditor.Build.OSArchitecture), options["architecture"]);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+                SetArchitectureForPlatform(BuildTarget.StandaloneOSX, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
             }
             else if (buildPlayerOptions.target == BuildTarget.StandaloneWindows64)
             {
-                UnityEditor.WindowsStandalone.UserBuildSettings.architecture = (UnityEditor.Build.OSArchitecture)Enum.Parse(typeof(UnityEditor.Build.OSArchitecture), options["architecture"]);
+                SetArchitectureForPlatform(BuildTarget.StandaloneWindows64, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
             }
+        }
+
+        // modified from Unity class DesktopStandaloneBuildWindowExtension
+        public static void SetArchitectureForPlatform(BuildTarget buildTarget, OSArchitecture architecture)
+        {
+            EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(buildTarget), "Architecture", architecture.ToString().ToLower());
         }
     }
 }
