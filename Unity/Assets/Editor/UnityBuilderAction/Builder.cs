@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEditor.Build;
+using UnityEditor.XR.Management;
 
 namespace UnityBuilderAction
 {
@@ -109,6 +110,10 @@ namespace UnityBuilderAction
             else if (buildPlayerOptions.target == BuildTarget.StandaloneWindows64)
             {
                 SetArchitectureForPlatform(BuildTarget.StandaloneWindows64, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
+            }
+            else if (buildPlayerOptions.target == BuildTarget.StandaloneLinux64)
+            {
+                XRGeneralSettingsPerBuildTarget.SettingsForBuildTarget(BuildTargetGroup.Standalone);
             }
         }
 
