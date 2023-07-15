@@ -117,14 +117,14 @@ namespace UnityBuilderAction
                 var buildTargetSettings = XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
                 var pluginSettings = buildTargetSettings.AssignedSettings;
 
-                bool removedOpenXRPlugin = XRPackageMetadataStore.RemoveLoader(pluginSettings, "com.unity.xr.openxr", BuildTargetGroup.Standalone);
+                bool removedOpenXRPlugin = XRPackageMetadataStore.RemoveLoader(pluginSettings, "UnityEngine.XR.OpenXR.OpenXRLoader", BuildTargetGroup.Standalone);
                 if (!removedOpenXRPlugin)
                 {
                     Console.WriteLine("Failed to remove OpenXR Plugin");
                     EditorApplication.Exit(150);
                 }
 
-                bool assignedOculusXRPlugin = XRPackageMetadataStore.AssignLoader(pluginSettings, "com.unity.xr.oculus", BuildTargetGroup.Standalone);
+                bool assignedOculusXRPlugin = XRPackageMetadataStore.AssignLoader(pluginSettings, "Unity.XR.Oculus.OculusLoader", BuildTargetGroup.Standalone);
                 if (!assignedOculusXRPlugin)
                 {
                     Console.WriteLine("Failed to assign OculusXR Plugin");
