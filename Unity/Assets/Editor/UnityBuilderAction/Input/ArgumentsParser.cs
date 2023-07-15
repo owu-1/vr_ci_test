@@ -43,16 +43,13 @@ namespace UnityBuilderAction.Input
             }
 
             string architecture;
-            if (!validatedOptions.TryGetValue("architecture", out architecture))
+            if (validatedOptions.TryGetValue("architecture", out architecture))
             {
-                Console.WriteLine("Missing argument -architecture");
-                EditorApplication.Exit(140);
-            }
-
-            if (!Enum.IsDefined(typeof(UnityEditor.Build.OSArchitecture), architecture))
-            {
-                Console.WriteLine($"{architecture} is not a defined {nameof(UnityEditor.Build.OSArchitecture)}");
-                EditorApplication.Exit(141);
+                if (!Enum.IsDefined(typeof(UnityEditor.Build.OSArchitecture), architecture))
+                {
+                    Console.WriteLine($"{architecture} is not a defined {nameof(UnityEditor.Build.OSArchitecture)}");
+                    EditorApplication.Exit(140);
+                }
             }
 
             const string defaultCustomBuildName = "TestBuild";

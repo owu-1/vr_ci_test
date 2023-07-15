@@ -10,6 +10,7 @@ using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEditor.Build;
 using UnityEditor.XR.Management;
+using UnityEditor.XR.Management.Metadata;
 
 namespace UnityBuilderAction
 {
@@ -113,7 +114,22 @@ namespace UnityBuilderAction
             }
             else if (buildPlayerOptions.target == BuildTarget.StandaloneLinux64)
             {
-                XRGeneralSettingsPerBuildTarget.SettingsForBuildTarget(BuildTargetGroup.Standalone);
+                var buildTargetSettings = XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
+                var pluginSettings = buildTargetSettings.AssignedSettings;
+
+                bool removedOpenXRPlugin = XRPackageMetadataStore.RemoveLoader(pluginSettings, "com.unity.xr.openxr", BuildTargetGroup.Standalone);
+                if (!removedOpenXRPlugin)
+                {
+                    Console.WriteLine("Failed to remove OpenXR Plugin");
+                    EditorApplication.Exit(150);
+                }
+
+                bool assignedOculusXRPlugin = XRPackageMetadataStore.AssignLoader(pluginSettings, "com.unity.xr.oculus", BuildTargetGroup.Standalone);
+                if (!assignedOculusXRPlugin)
+                {
+                    Console.WriteLine("Failed to assign OculusXR Plugin");
+                    EditorApplication.Exit(151);
+                }
             }
         }
 
