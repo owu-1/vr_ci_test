@@ -87,7 +87,10 @@ namespace UnityBuilderAction
             }
 
             // Apply extra configuration
-            ExtraConfiguration(buildPlayerOptions, options);
+            if (buildPlayerOptions.target == BuildTarget.StandaloneWindows64)
+            {
+                SetArchitectureForPlatform(BuildTarget.StandaloneWindows64, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
+            }
 
             // Perform build
             BuildReport buildReport = BuildPipeline.BuildPlayer(buildPlayerOptions);
@@ -99,38 +102,6 @@ namespace UnityBuilderAction
             // Result
             BuildResult result = summary.result;
             StdOutReporter.ExitWithResult(result);
-        }
-
-        public static void ExtraConfiguration(BuildPlayerOptions buildPlayerOptions, Dictionary<string, string> options)
-        {
-            if (buildPlayerOptions.target == BuildTarget.StandaloneOSX)
-            {
-                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
-                SetArchitectureForPlatform(BuildTarget.StandaloneOSX, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
-            }
-            else if (buildPlayerOptions.target == BuildTarget.StandaloneWindows64)
-            {
-                SetArchitectureForPlatform(BuildTarget.StandaloneWindows64, (OSArchitecture)Enum.Parse(typeof(OSArchitecture), options["architecture"]));
-            }
-            else if (buildPlayerOptions.target == BuildTarget.StandaloneLinux64)
-            {
-                var buildTargetSettings = XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
-                var pluginSettings = buildTargetSettings.AssignedSettings;
-
-                bool removedOpenXRPlugin = XRPackageMetadataStore.RemoveLoader(pluginSettings, "UnityEngine.XR.OpenXR.OpenXRLoader", BuildTargetGroup.Standalone);
-                if (!removedOpenXRPlugin)
-                {
-                    Console.WriteLine("Failed to remove OpenXR Plugin");
-                    EditorApplication.Exit(150);
-                }
-
-                bool assignedOculusXRPlugin = XRPackageMetadataStore.AssignLoader(pluginSettings, "Unity.XR.Oculus.OculusLoader", BuildTargetGroup.Standalone);
-                if (!assignedOculusXRPlugin)
-                {
-                    Console.WriteLine("Failed to assign OculusXR Plugin");
-                    EditorApplication.Exit(151);
-                }
-            }
         }
 
         // modified from Unity class DesktopStandaloneBuildWindowExtension
