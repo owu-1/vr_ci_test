@@ -43,7 +43,7 @@ jobs:
         with:
           projectPath: ${{ vars.UNITY_PROJECT_PATH }}
           targetPlatform: ${{ inputs.targetPlatform }}
-          buildMethod: UnityBuilderAction.Builder.BuildProject
+          #buildMethod: UnityBuilderAction.Builder.BuildProject
           customParameters: ${{ inputs.customParameters }}
       - uses: actions/upload-artifact@v3
         with:
