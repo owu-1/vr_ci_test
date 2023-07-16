@@ -12,8 +12,10 @@ jobs:
           - StandaloneWindows64
         architecture:
           - x64 # Intel 64-bit
+          # todo: does 32-bit PCVR work?
           - x86 # Intel 32-bit
-          - ARM64 # ARM 64-bit
+          # There is most likely no computer with an ARM chip that can run PCVR
+          # - ARM64 # ARM 64-bit
     uses: ./.github/workflows/build_unity.yml
     with:
       buildName: Windows-${{ matrix.architecture }}
